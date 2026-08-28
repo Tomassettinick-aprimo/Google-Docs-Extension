@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<style>
+/* ─── Reset & Base ────────────────────────────────────────────────────────── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+  font-size: 13px;
+  color: #1e293b;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select, textarea {
+  font-family: inherit;
+  font-size: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 7px 10px;
+  outline: none;
+  width: 100%;
+  color: #1e293b;
+  background: white;
+  transition: border-color .15s;
+}
+input:focus, select:focus, textarea:focus { border-color: #339997; box-shadow: 0 0 0 3px rgba(51,153,151,.15); }
+a { color: #339997; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ─── Utility ─────────────────────────────────────────────────────────────── */
+.hidden { display: none !important; }
+.flex { display: flex; }
+.items-center { align-items: center; }
+.gap-2 { gap: 8px; }
+.mt-2 { margin-top: 8px; }
+.mt-3 { margin-top: 12px; }
+.w-full { width: 100%; }
+.text-muted { color: #94a3b8; }
+.text-sm { font-size: 11px; }
+
+/* ─── Header ──────────────────────────────────────────────────────────────── */
+.header {
+  background: #141516;
+  padding: 10px 14px 8px;
+  flex-shrink: 0;
+  border-bottom: 1px solid #2A2D2E;
+}
+.header-top { display: flex; align-items: center; justify-content: space-between; }
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.header-logo img {
+  height: 22px;
+  width: auto;
+  display: block;
+  filter: brightness(0) invert(1);
+}
+.header-email {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.header-disconnect {
+  font-size: 11px;
+  color: rgba(255,255,255,0.55);
+  padding: 4px 8px;
+  border-radius: 5px;
+  border: 1px solid rgba(255,255,255,0.15);
+  transition: all .15s;
+}
+.header-disconnect:hover { background: rgba(255,255,255,.08); color: rgba(255,255,255,0.85); }
+
+/* ─── Tabs ────────────────────────────────────────────────────────────────── */
+.tab-bar {
+  display: flex;
+  background: #1D2425;
+  flex-shrink: 0;
+}
+.tab-btn {
+  flex: 1;
+  padding: 9px 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.5);
+  border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+  text-align: center;
+}
+.tab-btn:hover { color: rgba(255,255,255,0.85); }
+.tab-btn.active {
+  color: white;
+  border-bottom-color: #339997;
+  font-weight: 600;
+}
+
+/* ─── Tab Content Area ────────────────────────────────────────────────────── */
+.tab-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px;
+}
+.tab-content::-webkit-scrollbar { width: 4px; }
+.tab-content::-webkit-scrollbar-track { background: transparent; }
+.tab-content::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+
+/* ─── Connect Screen ──────────────────────────────────────────────────────── */
+#connect-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 20px;
+  background: #141516;
+}
+.connect-logo {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.connect-logo img {
+  height: 32px;
+  width: auto;
+  display: block;
+  filter: brightness(0) invert(1);
+}
+.connect-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 4px;
+  text-align: center;
+}
+.connect-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  text-align: center;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+.connect-form { width: 100%; }
+/* Inside connect screen, labels/hints are light-on-dark */
+#connect-screen .field-label { color: rgba(255,255,255,0.75); }
+#connect-screen .field-hint  { color: rgba(255,255,255,0.4); }
+#connect-screen input {
+  background: #1E2627;
+  border-color: #2E3A3A;
+  color: #ffffff;
+}
+#connect-screen input::placeholder { color: rgba(255,255,255,0.3); }
+#connect-screen input:focus { border-color: #339997; background: #1A2424; }
+.field-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.field-wrap { margin-bottom: 12px; }
+.field-hint {
+  font-size: 10px;
+  color: #94a3b8;
+  margin-top: 3px;
+}
+.btn-primary {
+  width: 100%;
+  padding: 10px;
+  background: #339997;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: background .15s;
+  margin-top: 4px;
+}
+.btn-primary:hover { background: #2A7D7C; }
+.btn-primary:disabled { background: #94a3b8; cursor: default; }
+.connect-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: #991b1b;
+  margin-top: 10px;
+}
+
+/* ─── Edit Session Banner ─────────────────────────────────────────────────── */
+#edit-banner {
+  background: #fffbeb;
+  border-bottom: 1px solid #fde68a;
+  padding: 8px 12px;
+  flex-shrink: 0;
+}
+.banner-row { display: flex; align-items: center; gap: 8px; }
+.banner-icon { font-size: 14px; flex-shrink: 0; }
+.banner-info { flex: 1; min-width: 0; }
+.banner-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #92400e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.banner-sub { font-size: 10px; color: #b45309; }
+.banner-actions { display: flex; gap: 4px; flex-shrink: 0; }
+.btn-save-version {
+  padding: 4px 9px;
+  background: #339997;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 5px;
+}
+.btn-cancel-edit {
+  padding: 4px 9px;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 10px;
+  border-radius: 5px;
+  border: 1px solid #e2e8f0;
+}
+
+/* ─── Search Tab ──────────────────────────────────────────────────────────── */
+.search-box {
+  position: relative;
+  margin-bottom: 10px;
+}
+.search-box input {
+  padding-left: 32px;
+}
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 13px;
+  pointer-events: none;
+}
+.filter-row {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.filter-chip {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+  background: white;
+  transition: all .15s;
+}
+.filter-chip:hover { border-color: #339997; color: #339997; }
+.filter-chip.active {
+  background: #E5F4F4;
+  border-color: #339997;
+  color: #1F6060;
+  font-weight: 600;
+}
+.results-header {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-bottom: 8px;
+}
+.results-list { display: flex; flex-direction: column; gap: 6px; }
+
+/* ─── Asset Card ──────────────────────────────────────────────────────────── */
+.asset-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  gap: 10px;
+  transition: border-color .15s, box-shadow .15s;
+}
+.asset-card:hover {
+  border-color: #BFD4F5;
+  box-shadow: 0 2px 8px rgba(0,79,173,.08);
+}
+.asset-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 7px;
+  flex-shrink: 0;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+.asset-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.asset-info { flex: 1; min-width: 0; }
+.asset-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+.asset-meta {
+  font-size: 10px;
+  color: #94a3b8;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ext-badge {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: 4px;
+}
+.asset-actions { display: flex; gap: 4px; }
+.btn-action {
+  padding: 4px 9px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  transition: all .15s;
+}
+.btn-insert {
+  background: #339997;
+  color: white;
+}
+.btn-insert:hover { background: #2A7D7C; }
+.btn-open {
+  background: #1D2425;
+  color: #339997;
+  border: 1px solid #339997;
+}
+.btn-open:hover { background: #2A3637; color: white; }
+.btn-ghost {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+.btn-ghost:hover { background: #e2e8f0; }
+
+/* Load more */
+.load-more-btn {
+  width: 100%;
+  padding: 8px;
+  margin-top: 8px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #339997;
+  font-weight: 500;
+  transition: background .15s;
+}
+.load-more-btn:hover { background: #f8fafc; }
+
+/* States */
+.state-box {
+  text-align: center;
+  padding: 32px 16px;
+  color: #94a3b8;
+}
+.state-box .state-icon { font-size: 32px; margin-bottom: 10px; }
+.state-box .state-title { font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: 4px; }
+.state-box .state-sub { font-size: 11px; }
+.spinner {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid #e2e8f0;
+  border-top-color: #339997;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Upload Tab ──────────────────────────────────────────────────────────── */
+.doc-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.doc-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.doc-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 2px;
+  word-break: break-word;
+}
+.doc-type { font-size: 10px; color: #94a3b8; text-transform: capitalize; }
+
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 5px;
+}
+.radio-group { display: flex; gap: 8px; }
+.radio-option {
+  flex: 1;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.radio-option.selected {
+  border-color: #339997;
+  background: #EDF7F7;
+}
+.radio-option input { display: none; }
+.radio-option-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  display: block;
+  margin-bottom: 2px;
+}
+.radio-option-desc { font-size: 10px; color: #94a3b8; }
+
+.upload-progress {
+  background: #E5F4F4;
+  border: 1px solid #99CFCF;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  font-size: 12px;
+  color: #1F5F5F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.upload-success {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 12px;
+  color: #166534;
+}
+.upload-success a { color: #15803d; font-weight: 600; }
+
+/* ─── Recent Tab ──────────────────────────────────────────────────────────── */
+.recent-item {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.recent-icon { font-size: 18px; flex-shrink: 0; }
+.recent-info { flex: 1; min-width: 0; }
+.recent-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.recent-meta { font-size: 10px; color: #94a3b8; }
+.recent-action {
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #339997;
+  background: #E5F4F4;
+  border-radius: 5px;
+  flex-shrink: 0;
+  border: 1px solid #99CFCF;
+}
+.recent-action:hover { background: #CCE9E9; }
+</style>
+</head>
+
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     CONNECT SCREEN
+════════════════════════════════════════════════════════════════════════════ -->
+<div id="connect-screen">
+  <div class="connect-logo">
+    <img src="https://www.aprimo.com/wp-content/uploads/2022/09/Logo.png"
+         alt="Aprimo"
+         onerror="this.outerHTML='<span style=\'font-size:22px;font-weight:700;color:white;letter-spacing:-0.5px\'>aprimo</span>'">
+  </div>
+  <div class="connect-title">Connect to Aprimo DAM</div>
+  <div class="connect-sub">Search, insert, and upload assets<br>directly from Google Workspace.</div>
+
+  <div class="connect-form">
+    <div class="field-wrap">
+      <label class="field-label" for="inp-tenant">Aprimo Tenant</label>
+      <input id="inp-tenant" type="text" placeholder="mycompany" autocomplete="off" spellcheck="false">
+      <div class="field-hint">The subdomain of your Aprimo URL (e.g. <em>mycompany</em>.aprimo.com)</div>
+    </div>
+    <div class="field-wrap">
+      <label class="field-label" for="inp-client-id">OAuth Client ID</label>
+      <input id="inp-client-id" type="text" placeholder="your-client-id" autocomplete="off" spellcheck="false">
+      <div class="field-hint">Register an OAuth client with PKCE in your Aprimo tenant settings.</div>
+    </div>
+    <div class="field-wrap">
+      <label class="field-label" for="inp-client-secret">Client Secret <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#94a3b8">(if required)</span></label>
+      <input id="inp-client-secret" type="password" placeholder="leave blank if none" autocomplete="off">
+      <div class="field-hint">Required if your Aprimo OAuth client has a secret configured.</div>
+    </div>
+    <button class="btn-primary" id="btn-connect">Connect to Aprimo</button>
+    <div id="connect-error" class="connect-error hidden"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     MAIN APP
+════════════════════════════════════════════════════════════════════════════ -->
+<div id="app-screen" class="hidden" style="display:flex;flex-direction:column;height:100%;">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-top">
+      <div class="header-logo">
+        <img src="https://www.aprimo.com/wp-content/uploads/2022/09/Logo.png"
+             alt="Aprimo"
+             onerror="this.outerHTML='<span style=\'font-size:14px;font-weight:700;color:white\'>aprimo</span>'">
+      </div>
+      <button class="header-disconnect" id="btn-disconnect" title="Disconnect">Disconnect</button>
+    </div>
+    <div class="header-email" id="user-email"></div>
+  </div>
+
+  <!-- Edit-in-progress banner -->
+  <div id="edit-banner" class="hidden">
+    <div class="banner-row">
+      <span class="banner-icon">✏️</span>
+      <div class="banner-info">
+        <div class="banner-title" id="banner-title">Editing asset…</div>
+        <div class="banner-sub">Unsaved — save as new version when done</div>
+      </div>
+      <div class="banner-actions">
+        <button class="btn-save-version" id="btn-save-version">Save Version</button>
+        <button class="btn-cancel-edit" id="btn-cancel-edit">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab bar -->
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="search">🔍 Search</button>
+    <button class="tab-btn" data-tab="upload">⬆ Upload</button>
+    <button class="tab-btn" data-tab="recent">🕐 Recent</button>
+  </div>
+
+  <!-- ── SEARCH TAB ──────────────────────────────────────────────────────── -->
+  <div id="tab-search" class="tab-content">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input id="search-input" type="text" placeholder="Search assets…" autocomplete="off">
+    </div>
+
+    <div class="filter-row" id="filter-row">
+      <button class="filter-chip active" data-exts="">All</button>
+      <button class="filter-chip" data-exts="png,jpg,jpeg,gif,svg,webp,tiff,bmp">Images</button>
+      <button class="filter-chip" data-exts="docx,doc,pdf">Docs</button>
+      <button class="filter-chip" data-exts="xlsx,xls,csv">Sheets</button>
+      <button class="filter-chip" data-exts="pptx,ppt">Slides</button>
+      <button class="filter-chip" data-exts="mp4,mov,avi,wmv,webm">Video</button>
+    </div>
+
+    <div id="search-results">
+      <div class="state-box">
+        <div class="state-icon">🔍</div>
+        <div class="state-title">Search your DAM</div>
+        <div class="state-sub">Type to find assets, or browse by type</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── UPLOAD TAB ──────────────────────────────────────────────────────── -->
+  <div id="tab-upload" class="tab-content hidden">
+    <!-- Active document info -->
+    <div class="doc-card">
+      <div class="doc-icon" id="doc-icon">📄</div>
+      <div>
+        <div class="doc-name" id="doc-name">Loading…</div>
+        <div class="doc-type" id="doc-type"></div>
+      </div>
+    </div>
+
+    <!-- Classification (required by Aprimo) -->
+    <div class="field-wrap">
+      <label class="field-label" for="upload-classification">Asset Type <span style="color:#ef4444">*</span></label>
+      <select id="upload-classification">
+        <option value="">— Loading… —</option>
+      </select>
+    </div>
+
+    <!-- Collection -->
+    <div class="field-wrap">
+      <label class="field-label" for="upload-collection">Collection</label>
+      <select id="upload-collection">
+        <option value="">— None —</option>
+      </select>
+    </div>
+
+    <!-- Tags -->
+    <div class="field-wrap">
+      <label class="field-label" for="upload-tags">Tags</label>
+      <input id="upload-tags" type="text" placeholder="brand, campaign, 2024 (comma-separated)">
+    </div>
+
+    <!-- Upload As -->
+    <div class="field-wrap">
+      <div class="section-label" style="margin-bottom:8px;">Upload As</div>
+      <div class="radio-group">
+        <label class="radio-option selected" id="radio-new">
+          <input type="radio" name="upload-as" value="new" checked>
+          <span class="radio-option-label">New Asset</span>
+          <span class="radio-option-desc">Create a new record in Aprimo</span>
+        </label>
+        <label class="radio-option" id="radio-version">
+          <input type="radio" name="upload-as" value="version">
+          <span class="radio-option-label">New Version</span>
+          <span class="radio-option-desc">Replace an existing asset</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Existing asset ID (shown only for "New Version") -->
+    <div class="field-wrap hidden" id="existing-asset-wrap">
+      <label class="field-label" for="existing-asset-id">Existing Asset ID</label>
+      <input id="existing-asset-id" type="text" placeholder="Aprimo record ID">
+      <div class="field-hint">Find this in the Aprimo DAM URL for the asset.</div>
+    </div>
+
+    <button class="btn-primary" id="btn-upload">Upload to Aprimo</button>
+    <div id="upload-status" class="mt-2"></div>
+  </div>
+
+  <!-- ── RECENT TAB ──────────────────────────────────────────────────────── -->
+  <div id="tab-recent" class="tab-content hidden">
+    <div id="recent-list">
+      <div class="state-box">
+        <div class="state-icon">🕐</div>
+        <div class="state-title">No recent activity</div>
+        <div class="state-sub">Assets you search, insert, or upload will appear here</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /#app-screen -->
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════════════════════════════ -->
+<script>
+// ─── State ────────────────────────────────────────────────────────────────────
+const state = {
+  tenant: '',
+  clientId: '',
+  webAppUrl: '',
+  searchQuery: '',
+  activeFilter: '',
+  searchPage: 0,
+  searchResults: [],
+  searchTotal: 0,
+  searching: false,
+  authPollTimer: null,
+  docInfo: null,
+  editSession: null
+};
+
+// ─── Boot ─────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  // Get the web app URL first, then check auth
+  google.script.run
+    .withSuccessHandler(function(url) {
+      state.webAppUrl = url;
+      checkAuth();
+    })
+    .withFailureHandler(handleError)
+    .getWebAppUrl();
+});
+
+// ─── Auth Check ───────────────────────────────────────────────────────────────
+function checkAuth() {
+  google.script.run
+    .withSuccessHandler(function(status) {
+      if (status.connected) {
+        showApp(status);
+      } else {
+        showConnectScreen();
+      }
+    })
+    .withFailureHandler(handleError)
+    .getAuthStatus();
+}
+
+function showConnectScreen() {
+  show('connect-screen');
+  hide('app-screen');
+  if (state.authPollTimer) { clearInterval(state.authPollTimer); state.authPollTimer = null; }
+}
+
+function showApp(status) {
+  hide('connect-screen');
+  show('app-screen');
+  document.getElementById('user-email').textContent = status.email || '';
+
+  // Load initial data
+  loadDocInfo();
+  loadClassifications();
+  loadCollections();
+  loadEditSession();
+  loadRecent();
+
+  // Show initial tab
+  const initialTab = '<?= initialTab ?>' || 'search';
+  switchTab(initialTab);
+
+  // Run a blank search to populate the results area
+  runSearch(true);
+}
+
+// ─── Connect Flow ─────────────────────────────────────────────────────────────
+// PKCE is generated server-side (Utilities.computeDigest) to avoid crypto.subtle
+// availability issues in the Apps Script HTML sandbox.
+
+document.getElementById('btn-connect').addEventListener('click', startConnect);
+
+function startConnect() {
+  const tenant = document.getElementById('inp-tenant').value.trim();
+  const clientId = document.getElementById('inp-client-id').value.trim();
+  const clientSecret = document.getElementById('inp-client-secret').value.trim();
+
+  if (!tenant) { showConnectError('Please enter your Aprimo tenant subdomain.'); return; }
+  if (!clientId) { showConnectError('Please enter your OAuth Client ID.'); return; }
+
+  const btn = document.getElementById('btn-connect');
+  btn.disabled = true;
+  btn.textContent = 'Connecting…';
+  hide('connect-error');
+
+  // Ask the server to generate PKCE + build the auth URL in one call
+  google.script.run
+    .withSuccessHandler(function(result) {
+      if (result.error) {
+        showConnectError(result.error);
+        resetConnectBtn();
+        return;
+      }
+
+      const popup = window.open(
+        result.authUrl,
+        'aprimo_auth',
+        'width=640,height=720,toolbar=0,menubar=0,location=0,status=0'
+      );
+
+      if (!popup) {
+        showConnectError('Popup blocked — please allow popups for script.google.com and try again.');
+        resetConnectBtn();
+        return;
+      }
+
+      // Poll every 2 s until the token lands (doGet stores it after exchange)
+      state.authPollTimer = setInterval(function() {
+        google.script.run
+          .withSuccessHandler(function(status) {
+            if (status.connected) {
+              clearInterval(state.authPollTimer);
+              state.authPollTimer = null;
+              try { popup.close(); } catch (e) {}
+              showApp(status);
+            }
+          })
+          .withFailureHandler(function() {}) // ignore poll errors
+          .getAuthStatus();
+      }, 2000);
+
+      // Timeout after 5 min
+      setTimeout(function() {
+        if (state.authPollTimer) {
+          clearInterval(state.authPollTimer);
+          state.authPollTimer = null;
+          resetConnectBtn();
+          showConnectError('Connection timed out. Please try again.');
+        }
+      }, 5 * 60 * 1000);
+    })
+    .withFailureHandler(function(err) {
+      showConnectError('Error: ' + (err.message || err));
+      resetConnectBtn();
+    })
+    .buildAuthUrl(tenant, clientId, clientSecret);
+}
+
+function resetConnectBtn() {
+  const btn = document.getElementById('btn-connect');
+  btn.disabled = false;
+  btn.textContent = 'Connect to Aprimo';
+}
+
+function showConnectError(msg) {
+  const el = document.getElementById('connect-error');
+  el.textContent = msg;
+  show('connect-error');
+}
+
+// ─── Disconnect ───────────────────────────────────────────────────────────────
+document.getElementById('btn-disconnect').addEventListener('click', function() {
+  if (!confirm('Disconnect from Aprimo? You will need to reconnect to use the add-on.')) return;
+  google.script.run.clearAuth();
+  showConnectScreen();
+  document.getElementById('inp-tenant').value = '';
+  document.getElementById('inp-client-id').value = '';
+});
+
+// ─── Tab Navigation ───────────────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    switchTab(btn.dataset.tab);
+  });
+});
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.tab === name);
+  });
+  ['search', 'upload', 'recent'].forEach(function(t) {
+    document.getElementById('tab-' + t).classList.toggle('hidden', t !== name);
+  });
+  if (name === 'recent') loadRecent();
+}
+
+// ─── Search ───────────────────────────────────────────────────────────────────
+let searchDebounce = null;
+
+document.getElementById('search-input').addEventListener('input', function() {
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(function() { runSearch(true); }, 400);
+});
+
+document.getElementById('filter-row').addEventListener('click', function(e) {
+  const chip = e.target.closest('.filter-chip');
+  if (!chip) return;
+  document.querySelectorAll('.filter-chip').forEach(function(c) { c.classList.remove('active'); });
+  chip.classList.add('active');
+  state.activeFilter = chip.dataset.exts;
+  runSearch(true);
+});
+
+function runSearch(reset) {
+  if (reset) {
+    state.searchPage = 0;
+    state.searchResults = [];
+  }
+
+  const query = document.getElementById('search-input').value.trim();
+  const fileTypes = state.activeFilter ? state.activeFilter.split(',') : [];
+
+  state.searching = true;
+  renderSearchResults(true);
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      state.searching = false;
+      if (result.error) {
+        renderSearchError(result.error);
+        return;
+      }
+      state.searchResults = reset
+        ? result.assets
+        : state.searchResults.concat(result.assets);
+      state.searchTotal = result.total;
+      state.searchHasMore = result.hasMore;
+      state.searchPage = result.page + 1;
+      renderSearchResults(false);
+    })
+    .withFailureHandler(function(err) {
+      state.searching = false;
+      renderSearchError(err.message);
+    })
+    .searchAssets(query, fileTypes, state.searchPage);
+}
+
+function renderSearchResults(loading) {
+  const container = document.getElementById('search-results');
+
+  if (loading && state.searchPage === 0) {
+    container.innerHTML = '<div class="state-box"><div class="spinner"></div><div class="state-sub" style="margin-top:10px">Searching…</div></div>';
+    return;
+  }
+
+  if (!state.searching && state.searchResults.length === 0) {
+    const q = document.getElementById('search-input').value.trim();
+    container.innerHTML = q
+      ? '<div class="state-box"><div class="state-icon">🔍</div><div class="state-title">No results found</div><div class="state-sub">Try different keywords or filters</div></div>'
+      : '<div class="state-box"><div class="state-icon">🔍</div><div class="state-title">Search your DAM</div><div class="state-sub">Type to find assets, or browse by type</div></div>';
+    return;
+  }
+
+  let html = '<div class="results-list">';
+  state.searchResults.forEach(function(asset) {
+    html += renderAssetCard(asset);
+  });
+  html += '</div>';
+
+  if (state.searchHasMore) {
+    html += '<button class="load-more-btn" onclick="runSearch(false)">Load more results</button>';
+  }
+
+  container.innerHTML = html;
+}
+
+function renderSearchError(msg) {
+  document.getElementById('search-results').innerHTML =
+    '<div class="state-box"><div class="state-icon">⚠️</div><div class="state-title">Error</div><div class="state-sub">' + escHtml(msg) + '</div></div>';
+}
+
+function renderAssetCard(asset) {
+  const ext = (asset.fileExtension || '').toLowerCase();
+  const isImage = /^(png|jpg|jpeg|gif|svg|webp|tiff|bmp)$/.test(ext);
+  const isVideo = /^(mp4|mov|avi|wmv|webm|mkv)$/.test(ext);
+  const isAnyOffice = /^(docx|doc|xlsx|xls|pptx|ppt)$/.test(ext);
+
+  // Determine which Office extensions are editable in the current Google app.
+  // "Open & Edit" should only appear for the compatible format.
+  const docType = state.docInfo && state.docInfo.type; // 'document' | 'spreadsheet' | 'presentation' | null
+  const COMPAT = {
+    document:     /^(docx|doc)$/,
+    spreadsheet:  /^(xlsx|xls)$/,
+    presentation: /^(pptx|ppt)$/
+  };
+  const isCompatibleOffice = docType && COMPAT[docType] && COMPAT[docType].test(ext);
+
+  // thumbnailUrl is a pre-signed Aprimo CDN URI — usable in <img src> without auth.
+  const thumbHtml = asset.thumbnailUrl
+    ? `<img src="${escHtml(asset.thumbnailUrl)}" alt="" onerror="this.style.display='none';this.parentElement.textContent='${getFileEmoji(ext)}'">`
+    : getFileEmoji(ext);
+
+  const extColor = isImage ? '#0369a1' : isAnyOffice ? '#1d4ed8' : isVideo ? '#7c3aed' : '#475569';
+  const extBg   = isImage ? '#e0f2fe' : isAnyOffice ? '#dbeafe' : isVideo ? '#ede9fe' : '#f1f5f9';
+
+  const sizeStr = asset.fileSize ? formatBytes(asset.fileSize) : '';
+  const meta = [
+    ext ? `<span class="ext-badge" style="background:${extBg};color:${extColor}">${ext.toUpperCase()}</span>` : '',
+    sizeStr,
+    asset.collectionLabel
+  ].filter(Boolean).join(' · ');
+
+  let actions = '';
+  if (isImage || isVideo) {
+    // Images/video: Insert into document (available in all app types)
+    actions = `<button class="btn-action btn-insert" onclick="insertAsset('${escHtml(asset.id)}','${escAttr(asset.title)}','${escAttr(asset.downloadUrl || '')}')">Insert</button>`;
+    actions += `<button class="btn-action btn-ghost" onclick="previewAsset('${escHtml(asset.id)}')">Preview</button>`;
+  } else if (isCompatibleOffice) {
+    // Office file compatible with the current app (e.g. DOCX in Google Docs)
+    actions = `<button class="btn-action btn-open" onclick="openAndEdit('${escHtml(asset.id)}','${escAttr(asset.title)}')">Open &amp; Edit</button>`;
+    actions += `<button class="btn-action btn-ghost" onclick="previewAsset('${escHtml(asset.id)}')">Info</button>`;
+  } else if (isAnyOffice) {
+    // Office file but not compatible with the current app — info only
+    actions = `<button class="btn-action btn-ghost" onclick="previewAsset('${escHtml(asset.id)}')">Info</button>`;
+  } else {
+    actions = `<button class="btn-action btn-ghost" onclick="previewAsset('${escHtml(asset.id)}')">Preview</button>`;
+  }
+
+  return `
+  <div class="asset-card">
+    <div class="asset-thumb">${thumbHtml}</div>
+    <div class="asset-info">
+      <div class="asset-name" title="${escAttr(asset.title)}">${escHtml(asset.title)}</div>
+      <div class="asset-meta">${meta}</div>
+      <div class="asset-actions">${actions}</div>
+    </div>
+  </div>`;
+}
+
+// ─── Insert Image ─────────────────────────────────────────────────────────────
+function insertAsset(assetId, title, downloadUrl) {
+  if (!downloadUrl) {
+    // Fetch download URL first
+    setCardLoading(assetId, true);
+    google.script.run
+      .withSuccessHandler(function(result) {
+        if (result.error) { alert(result.error); setCardLoading(assetId, false); return; }
+        doInsert(assetId, title, result.url);
+      })
+      .withFailureHandler(function(err) { alert(err.message); setCardLoading(assetId, false); })
+      .getAssetDownloadUrl(assetId);
+  } else {
+    doInsert(assetId, title, downloadUrl);
+  }
+}
+
+function doInsert(assetId, title, url) {
+  setCardLoading(assetId, true);
+  google.script.run
+    .withSuccessHandler(function(result) {
+      setCardLoading(assetId, false);
+      if (result.success) {
+        showToast('✅ Inserted into document!');
+        loadRecent();
+      } else {
+        alert('Insert failed: ' + result.error);
+      }
+    })
+    .withFailureHandler(function(err) {
+      setCardLoading(assetId, false);
+      alert('Insert failed: ' + err.message);
+    })
+    .insertImage(assetId, title, url);
+}
+
+// ─── Open & Edit ─────────────────────────────────────────────────────────────
+function openAndEdit(assetId, title) {
+  if (!confirm(`Open "${title}" from Aprimo for editing?\nA copy will be saved to your Drive. When done, click "Save as New Version" in the banner above.`)) return;
+
+  setCardLoading(assetId, true);
+  google.script.run
+    .withSuccessHandler(function(result) {
+      setCardLoading(assetId, false);
+      if (result.success) {
+        window.open(result.editUrl, '_blank');
+        loadEditSession(); // Show banner
+      } else {
+        alert('Could not open asset: ' + result.error);
+      }
+    })
+    .withFailureHandler(function(err) {
+      setCardLoading(assetId, false);
+      alert('Error: ' + err.message);
+    })
+    .openAssetForEditing(assetId, title);
+}
+
+// ─── Edit Session Banner ──────────────────────────────────────────────────────
+function loadEditSession() {
+  google.script.run
+    .withSuccessHandler(function(session) {
+      state.editSession = session;
+      if (session) {
+        document.getElementById('banner-title').textContent =
+          'Editing: ' + session.originalTitle;
+        show('edit-banner');
+      } else {
+        hide('edit-banner');
+      }
+    })
+    .getCurrentEditSession();
+}
+
+document.getElementById('btn-save-version').addEventListener('click', function() {
+  if (!confirm('Upload the current version of this document back to Aprimo?')) return;
+  const btn = this;
+  btn.textContent = 'Saving…';
+  btn.disabled = true;
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      btn.textContent = 'Save Version';
+      btn.disabled = false;
+      if (result.success) {
+        showToast('✅ New version saved to Aprimo!');
+        hide('edit-banner');
+        state.editSession = null;
+        loadRecent();
+      } else {
+        alert('Save failed: ' + result.error);
+      }
+    })
+    .withFailureHandler(function(err) {
+      btn.textContent = 'Save Version';
+      btn.disabled = false;
+      alert('Error: ' + err.message);
+    })
+    .saveEditAsNewVersion();
+});
+
+document.getElementById('btn-cancel-edit').addEventListener('click', function() {
+  if (!confirm('Cancel this edit? The temp file in your Drive will be deleted.')) return;
+  google.script.run
+    .withSuccessHandler(function() { hide('edit-banner'); state.editSession = null; })
+    .cancelEditSession();
+});
+
+// ─── Upload Tab ───────────────────────────────────────────────────────────────
+function loadDocInfo() {
+  google.script.run
+    .withSuccessHandler(function(info) {
+      state.docInfo = info;
+      const icons = { document: '📄', spreadsheet: '📊', presentation: '📑' };
+      document.getElementById('doc-icon').textContent = icons[info.type] || '📎';
+      document.getElementById('doc-name').textContent = info.name || 'Unknown document';
+      document.getElementById('doc-type').textContent =
+        info.type ? 'Google ' + capitalize(info.type) + ' → ' + (info.exportExtension || '').toUpperCase() : '';
+    })
+    .getActiveDocumentInfo();
+}
+
+function loadClassifications() {
+  google.script.run
+    .withSuccessHandler(function(result) {
+      const sel = document.getElementById('upload-classification');
+      sel.innerHTML = '<option value="">— Select asset type —</option>';
+      if (result.error || !result.classifications || !result.classifications.length) {
+        sel.innerHTML = '<option value="">— None available —</option>';
+        return;
+      }
+      result.classifications.forEach(function(c) {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.label;
+        sel.appendChild(opt);
+      });
+    })
+    .withFailureHandler(function() {
+      document.getElementById('upload-classification').innerHTML = '<option value="">— Could not load —</option>';
+    })
+    .getClassifications();
+}
+
+function loadCollections() {
+  google.script.run
+    .withSuccessHandler(function(result) {
+      const sel = document.getElementById('upload-collection');
+      if (result.error || !result.collections) return;
+      result.collections.forEach(function(c) {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.label;
+        sel.appendChild(opt);
+      });
+    })
+    .getCollections();
+}
+
+// Radio button styling
+document.querySelectorAll('input[name="upload-as"]').forEach(function(radio) {
+  radio.addEventListener('change', function() {
+    document.getElementById('radio-new').classList.toggle('selected', radio.value === 'new');
+    document.getElementById('radio-version').classList.toggle('selected', radio.value === 'version');
+    document.getElementById('existing-asset-wrap').classList.toggle('hidden', radio.value === 'new');
+  });
+});
+
+document.getElementById('btn-upload').addEventListener('click', function() {
+  const uploadAs = document.querySelector('input[name="upload-as"]:checked').value;
+  const classificationId = document.getElementById('upload-classification').value;
+  const collectionId = document.getElementById('upload-collection').value;
+  const tags = document.getElementById('upload-tags').value;
+  const existingId = document.getElementById('existing-asset-id').value.trim();
+
+  if (uploadAs === 'new' && !classificationId) {
+    alert('Please select an asset type (classification) before uploading.');
+    return;
+  }
+  if (uploadAs === 'version' && !existingId) {
+    alert('Please enter the Aprimo asset ID to upload a new version.');
+    return;
+  }
+
+  const btn = document.getElementById('btn-upload');
+  btn.disabled = true;
+  btn.textContent = 'Uploading…';
+
+  const statusEl = document.getElementById('upload-status');
+  statusEl.innerHTML = '<div class="upload-progress"><span class="spinner"></span> Exporting and uploading…</div>';
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      btn.disabled = false;
+      btn.textContent = 'Upload to Aprimo';
+      if (result.success) {
+        statusEl.innerHTML = `<div class="upload-success">
+          ✅ <strong>Uploaded successfully!</strong><br>
+          <a href="${escHtml(result.viewUrl)}" target="_blank">View in Aprimo →</a>
+        </div>`;
+        loadRecent();
+      } else {
+        statusEl.innerHTML = '<div class="connect-error">' + escHtml(result.error || 'Upload failed') + '</div>';
+      }
+    })
+    .withFailureHandler(function(err) {
+      btn.disabled = false;
+      btn.textContent = 'Upload to Aprimo';
+      statusEl.innerHTML = '<div class="connect-error">' + escHtml(err.message) + '</div>';
+    })
+    .uploadActiveDocument(collectionId, tags, uploadAs, existingId || undefined, classificationId || undefined);
+});
+
+// ─── Recent Tab ───────────────────────────────────────────────────────────────
+function loadRecent() {
+  google.script.run
+    .withSuccessHandler(function(items) {
+      const container = document.getElementById('recent-list');
+      if (!items || items.length === 0) {
+        container.innerHTML = '<div class="state-box"><div class="state-icon">🕐</div><div class="state-title">No recent activity</div><div class="state-sub">Assets you search, insert, or upload will appear here</div></div>';
+        return;
+      }
+      container.innerHTML = items.map(function(item) {
+        const ext = item.fileExtension || '';
+        const emoji = getFileEmoji(ext);
+        const actionLabel = { inserted: 'Inserted', uploaded: 'Uploaded', opened: 'Opened', 're-uploaded': 'Re-uploaded' }[item.action] || 'Accessed';
+        const timeAgo = relativeTime(item.accessedAt);
+        return `<div class="recent-item">
+          <div class="recent-icon">${emoji}</div>
+          <div class="recent-info">
+            <div class="recent-name" title="${escAttr(item.title || item.id)}">${escHtml(item.title || item.id)}</div>
+            <div class="recent-meta">${actionLabel} · ${timeAgo}</div>
+          </div>
+          <button class="recent-action" onclick="insertAsset('${escHtml(item.id)}','${escAttr(item.title || '')}','')">↗</button>
+        </div>`;
+      }).join('');
+    })
+    .getRecentAssets();
+}
+
+// ─── Utilities ────────────────────────────────────────────────────────────────
+function getFileEmoji(ext) {
+  if (/^(png|jpg|jpeg|gif|svg|webp|tiff|bmp)$/.test(ext)) return '🖼️';
+  if (/^(mp4|mov|avi|wmv|webm|mkv)$/.test(ext)) return '🎬';
+  if (/^(mp3|wav|aac|ogg|flac)$/.test(ext)) return '🎵';
+  if (/^(docx|doc)$/.test(ext)) return '📝';
+  if (/^(xlsx|xls|csv)$/.test(ext)) return '📊';
+  if (/^(pptx|ppt)$/.test(ext)) return '📑';
+  if (/^pdf$/.test(ext)) return '📕';
+  if (/^(zip|rar|7z|tar|gz)$/.test(ext)) return '🗜️';
+  return '📎';
+}
+
+function formatBytes(bytes) {
+  if (!bytes) return '';
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
+  if (bytes < 1024 * 1024 * 1024) return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+  return (bytes / 1024 / 1024 / 1024).toFixed(1) + ' GB';
+}
+
+function relativeTime(ts) {
+  if (!ts) return '';
+  const diff = Date.now() - ts;
+  if (diff < 60000) return 'just now';
+  if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
+  if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+  return Math.floor(diff / 86400000) + 'd ago';
+}
+
+function capitalize(s) { return s ? s[0].toUpperCase() + s.slice(1) : ''; }
+
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escAttr(s) { return escHtml(s).replace(/'/g,'&#39;'); }
+
+function show(id) { document.getElementById(id).classList.remove('hidden'); document.getElementById(id).style.display = ''; }
+function hide(id) { document.getElementById(id).classList.add('hidden'); }
+
+function handleError(err) { console.error('Apps Script error:', err); }
+
+function setCardLoading(assetId, loading) {
+  // Future: add per-card spinner state
+}
+
+function previewAsset(assetId) {
+  google.script.run
+    .withSuccessHandler(function(asset) {
+      if (!asset || asset.error) { alert(asset && asset.error || 'Asset not found'); return; }
+      const info = [
+        asset.title,
+        asset.fileExtension ? asset.fileExtension.toUpperCase() + ' · ' + formatBytes(asset.fileSize) : '',
+        asset.collectionLabel ? '📁 ' + asset.collectionLabel : '',
+        asset.modifiedOn ? 'Modified: ' + new Date(asset.modifiedOn).toLocaleDateString() : ''
+      ].filter(Boolean).join('\n');
+      alert(info);
+    })
+    .getAsset(assetId);
+}
+
+// ─── Toast Notification ───────────────────────────────────────────────────────
+function showToast(msg) {
+  let toast = document.getElementById('toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast';
+    toast.style.cssText = 'position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#0f172a;color:white;padding:8px 16px;border-radius:8px;font-size:12px;z-index:999;opacity:0;transition:opacity .2s';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  setTimeout(function() { toast.style.opacity = '0'; }, 2500);
+}
+</script>
+</body>
+</html>

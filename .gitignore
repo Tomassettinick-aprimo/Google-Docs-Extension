@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Build artifacts pulled from remote (clasp pull output)
+src/src/
+
+# Environment / secrets — never commit these
+.env
+.env.*
+*.secret
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/settings.json
+*.swp
+
+# Logs
+*.log

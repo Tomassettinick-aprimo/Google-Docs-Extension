@@ -1,0 +1,20 @@
+{
+  "name": "aprimo-gdocs-addon",
+  "version": "1.0.0",
+  "description": "Google Workspace Add-on for Aprimo DAM — search, insert, upload, and version assets directly from Docs, Sheets, and Slides.",
+  "scripts": {
+    "login": "clasp login",
+    "create": "clasp create --type standalone --title \"Aprimo DAM\"",
+    "push": "npx @google/clasp@2.4.2 push",
+    "push:watch": "npx @google/clasp@2.4.2 push --watch",
+    "pull": "npx @google/clasp@2.4.2 pull",
+    "deploy": "clasp deploy --description \"Production\"",
+    "open": "clasp open",
+    "logs": "clasp logs"
+  },
+  "devDependencies": {
+    "@google/clasp": "^2.4.2",
+    "@types/google-apps-script": "^1.0.83",
+    "typescript": "^5.3.3"
+  }
+}
