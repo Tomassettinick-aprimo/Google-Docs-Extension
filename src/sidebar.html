@@ -104,27 +104,49 @@ a:hover { text-decoration: underline; }
   font-weight: 600;
 }
 
+/* ─── App Screen Layout ──────────────────────────────────────────────────── */
+/* height:100% + flex column here so show() clearing style.display='' doesn't
+   revert #app-screen to display:block (which breaks the flex overflow chain). */
+#app-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 /* ─── Tab Content Area ────────────────────────────────────────────────────── */
 .tab-content {
   flex: 1;
+  min-height: 0;        /* Required: lets flex child shrink so overflow-y can trigger */
   overflow-y: auto;
   overflow-x: hidden;
   padding: 12px;
+  /* Scrollbar always-visible so users know there's more content */
+  scrollbar-width: thin;
+  scrollbar-color: #339997 transparent;
 }
-.tab-content::-webkit-scrollbar { width: 4px; }
-.tab-content::-webkit-scrollbar-track { background: transparent; }
-.tab-content::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+.tab-content::-webkit-scrollbar { width: 7px; }
+.tab-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.06); border-radius: 4px; }
+.tab-content::-webkit-scrollbar-thumb { background: #339997; border-radius: 4px; }
+.tab-content::-webkit-scrollbar-thumb:hover { background: #2A7D7C; }
 
 /* ─── Connect Screen ──────────────────────────────────────────────────────── */
 #connect-screen {
   flex: 1;
+  min-height: 0;        /* Required: lets flex child shrink so overflow-y can trigger */
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 28px 20px;
   background: #141516;
+  scrollbar-width: thin;
+  scrollbar-color: #339997 transparent;
 }
+#connect-screen::-webkit-scrollbar { width: 7px; }
+#connect-screen::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
+#connect-screen::-webkit-scrollbar-thumb { background: #339997; border-radius: 4px; }
+#connect-screen::-webkit-scrollbar-thumb:hover { background: #2A7D7C; }
 .connect-logo {
   margin-bottom: 20px;
   display: flex;
@@ -344,7 +366,7 @@ a:hover { text-decoration: underline; }
   letter-spacing: 0.04em;
   margin-right: 4px;
 }
-.asset-actions { display: flex; gap: 4px; }
+.asset-actions { display: flex; gap: 4px; flex-wrap: wrap; }
 .btn-action {
   padding: 4px 9px;
   border-radius: 5px;
@@ -369,6 +391,99 @@ a:hover { text-decoration: underline; }
   border: 1px solid #e2e8f0;
 }
 .btn-ghost:hover { background: #e2e8f0; }
+.btn-drive {
+  background: white;
+  color: #1a73e8;
+  border: 1px solid #d2e3fc;
+}
+.btn-drive:hover { background: #e8f0fe; border-color: #1a73e8; }
+.btn-drive:disabled { background: #f8fafc; color: #94a3b8; border-color: #e2e8f0; cursor: default; }
+
+/* ─── Asset Detail Panel ──────────────────────────────────────────────────── */
+.detail-back {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #339997;
+  padding: 4px 0 10px;
+  width: 100%;
+  text-align: left;
+}
+.detail-back:hover { color: #2A7D7C; }
+.detail-hero {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.detail-hero-thumb {
+  width: 68px;
+  height: 68px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+.detail-hero-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.detail-hero-info { flex: 1; min-width: 0; }
+.detail-hero-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.4;
+  margin-bottom: 5px;
+  word-break: break-word;
+}
+.detail-hero-badges { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+.detail-section { margin-bottom: 12px; }
+.detail-section-head {
+  font-size: 10px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #f1f5f9;
+}
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  gap: 8px;
+  border-bottom: 1px solid #f8fafc;
+}
+.detail-row:last-child { border-bottom: none; }
+.detail-label { font-size: 11px; color: #94a3b8; flex-shrink: 0; min-width: 72px; }
+.detail-value {
+  font-size: 11px;
+  color: #1e293b;
+  text-align: right;
+  word-break: break-word;
+  max-width: 165px;
+}
+.detail-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+.detail-actions .btn-action {
+  flex: 1;
+  text-align: center;
+  padding: 8px 10px;
+  font-size: 11px;
+}
 
 /* Load more */
 .load-more-btn {
@@ -483,6 +598,116 @@ a:hover { text-decoration: underline; }
 }
 .upload-success a { color: #15803d; font-weight: 600; }
 
+/* ─── Version Asset Picker ────────────────────────────────────────────────── */
+.version-search-row { display: flex; gap: 6px; margin-bottom: 8px; }
+.version-search-row input { flex: 1; min-width: 0; }
+.btn-search-version {
+  padding: 7px 11px;
+  background: #1D2425;
+  color: #339997;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid #339997;
+  border-radius: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all .15s;
+}
+.btn-search-version:hover { background: #2A3637; color: white; }
+.version-results-list { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; max-height: 220px; overflow-y: auto; }
+.version-asset-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: border-color .15s;
+}
+.version-asset-card:hover { border-color: #BFD4F5; }
+.version-asset-thumb {
+  width: 34px;
+  height: 34px;
+  border-radius: 5px;
+  flex-shrink: 0;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+.version-asset-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.version-asset-info { flex: 1; min-width: 0; }
+.version-asset-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.version-asset-meta { font-size: 10px; color: #94a3b8; margin-top: 1px; }
+.btn-pick-version {
+  padding: 4px 9px;
+  background: #339997;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 5px;
+  flex-shrink: 0;
+  transition: background .15s;
+}
+.btn-pick-version:hover { background: #2A7D7C; }
+/* Compact "selected" card */
+.version-selected-card {
+  background: #EDF7F7;
+  border: 1px solid #339997;
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.version-selected-thumb {
+  width: 34px;
+  height: 34px;
+  border-radius: 5px;
+  flex-shrink: 0;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(51,153,151,.3);
+}
+.version-selected-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.version-selected-info { flex: 1; min-width: 0; }
+.version-selected-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.version-selected-sub { font-size: 10px; color: #339997; font-weight: 500; }
+.btn-change-version {
+  font-size: 10px;
+  color: #64748b;
+  font-weight: 500;
+  padding: 3px 7px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  flex-shrink: 0;
+  transition: all .15s;
+}
+.btn-change-version:hover { border-color: #94a3b8; color: #0f172a; }
+
 /* ─── Recent Tab ──────────────────────────────────────────────────────────── */
 .recent-item {
   background: white;
@@ -557,7 +782,7 @@ a:hover { text-decoration: underline; }
 <!-- ═══════════════════════════════════════════════════════════════════════════
      MAIN APP
 ════════════════════════════════════════════════════════════════════════════ -->
-<div id="app-screen" class="hidden" style="display:flex;flex-direction:column;height:100%;">
+<div id="app-screen" class="hidden">
 
   <!-- Header -->
   <div class="header">
@@ -578,7 +803,11 @@ a:hover { text-decoration: underline; }
       <span class="banner-icon">✏️</span>
       <div class="banner-info">
         <div class="banner-title" id="banner-title">Editing asset…</div>
-        <div class="banner-sub">Unsaved — save as new version when done</div>
+        <div class="banner-sub">
+          <a id="banner-open-link" href="#" target="_blank" style="color:#b45309;font-weight:600;text-decoration:underline">Open document ↗</a>
+          <span style="color:#b45309;margin:0 4px">·</span>
+          <span>Save as new version when done</span>
+        </div>
       </div>
       <div class="banner-actions">
         <button class="btn-save-version" id="btn-save-version">Save Version</button>
@@ -617,6 +846,12 @@ a:hover { text-decoration: underline; }
         <div class="state-sub">Type to find assets, or browse by type</div>
       </div>
     </div>
+
+    <!-- Detail panel — shown in place of search-results when a card is expanded -->
+    <div id="detail-panel" class="hidden">
+      <button class="detail-back" id="detail-back-btn" onclick="closeDetailPanel()">← Back to results</button>
+      <div id="detail-content"></div>
+    </div>
   </div>
 
   <!-- ── UPLOAD TAB ──────────────────────────────────────────────────────── -->
@@ -646,12 +881,6 @@ a:hover { text-decoration: underline; }
       </select>
     </div>
 
-    <!-- Tags -->
-    <div class="field-wrap">
-      <label class="field-label" for="upload-tags">Tags</label>
-      <input id="upload-tags" type="text" placeholder="brand, campaign, 2024 (comma-separated)">
-    </div>
-
     <!-- Upload As -->
     <div class="field-wrap">
       <div class="section-label" style="margin-bottom:8px;">Upload As</div>
@@ -664,16 +893,34 @@ a:hover { text-decoration: underline; }
         <label class="radio-option" id="radio-version">
           <input type="radio" name="upload-as" value="version">
           <span class="radio-option-label">New Version</span>
-          <span class="radio-option-desc">Replace an existing asset</span>
+          <span class="radio-option-desc">Add version to existing asset</span>
         </label>
       </div>
     </div>
 
-    <!-- Existing asset ID (shown only for "New Version") -->
-    <div class="field-wrap hidden" id="existing-asset-wrap">
-      <label class="field-label" for="existing-asset-id">Existing Asset ID</label>
-      <input id="existing-asset-id" type="text" placeholder="Aprimo record ID">
-      <div class="field-hint">Find this in the Aprimo DAM URL for the asset.</div>
+    <!-- Version asset picker (shown only for "New Version") -->
+    <div class="field-wrap hidden" id="version-asset-wrap">
+      <label class="field-label">Find Asset to Version</label>
+      <!-- Search row -->
+      <div id="version-search-area">
+        <div class="version-search-row">
+          <input id="version-search-input" type="text" placeholder="Search Aprimo by title…">
+          <button class="btn-search-version" id="btn-version-search">Search</button>
+        </div>
+        <div id="version-search-status" class="field-hint"></div>
+        <div id="version-search-results" class="version-results-list hidden"></div>
+      </div>
+      <!-- Selected asset (shown after pick) -->
+      <div id="version-selected-area" class="hidden">
+        <div class="version-selected-card">
+          <div class="version-selected-thumb" id="version-sel-thumb">📄</div>
+          <div class="version-selected-info">
+            <div class="version-selected-name" id="version-sel-name"></div>
+            <div class="version-selected-sub">Selected · click Change to pick another</div>
+          </div>
+          <button class="btn-change-version" onclick="clearVersionSelection()">Change</button>
+        </div>
+      </div>
     </div>
 
     <button class="btn-primary" id="btn-upload">Upload to Aprimo</button>
@@ -710,7 +957,12 @@ const state = {
   searching: false,
   authPollTimer: null,
   docInfo: null,
-  editSession: null
+  editSession: null,
+  // Version asset picker: { id, title } when an asset has been selected
+  selectedVersionAsset: null,
+  // Tab navigation
+  activeTab: 'search',
+  previewFromTab: null
 };
 
 // ─── Boot ─────────────────────────────────────────────────────────────────────
@@ -866,6 +1118,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn) {
 });
 
 function switchTab(name) {
+  state.activeTab = name;
   document.querySelectorAll('.tab-btn').forEach(function(b) {
     b.classList.toggle('active', b.dataset.tab === name);
   });
@@ -991,6 +1244,9 @@ function renderAssetCard(asset) {
     asset.collectionLabel
   ].filter(Boolean).join(' · ');
 
+  // "Save to Drive" is available on every asset type
+  const driveBtn = `<button class="btn-action btn-drive" id="drive-${escHtml(asset.id)}" onclick="syncToDrive('${escHtml(asset.id)}','${escAttr(asset.title)}','${escAttr(asset.fileExtension || '')}')">Save to Drive</button>`;
+
   let actions = '';
   if (isImage || isVideo) {
     // Images/video: Insert into document (available in all app types)
@@ -1006,6 +1262,7 @@ function renderAssetCard(asset) {
   } else {
     actions = `<button class="btn-action btn-ghost" onclick="previewAsset('${escHtml(asset.id)}')">Preview</button>`;
   }
+  actions += driveBtn;
 
   return `
   <div class="asset-card">
@@ -1056,34 +1313,126 @@ function doInsert(assetId, title, url) {
 
 // ─── Open & Edit ─────────────────────────────────────────────────────────────
 function openAndEdit(assetId, title) {
-  if (!confirm(`Open "${title}" from Aprimo for editing?\nA copy will be saved to your Drive. When done, click "Save as New Version" in the banner above.`)) return;
+  // window.open() MUST be called synchronously while the user-gesture context
+  // is still active.  Calling it inside a google.script.run success-handler
+  // (which fires asynchronously) is treated as an untrusted popup and blocked
+  // by every major browser.
+  //
+  // Solution: open a blank tab right now (gesture is live), store the handle,
+  // then navigate it to the real URL once the server call completes.
+  var newTab = window.open('', '_blank');
+  if (newTab) {
+    newTab.document.write(
+      '<html><head><title>Opening from Aprimo…</title></head>' +
+      '<body style="font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif;' +
+             'padding:40px 32px;color:#334155;max-width:480px">' +
+        '<div style="font-size:28px;margin-bottom:16px">⏳</div>' +
+        '<h3 style="margin:0 0 8px;font-size:16px">Downloading from Aprimo…</h3>' +
+        '<p style="margin:0;font-size:13px;color:#64748b;line-height:1.6">' +
+          'The file is being fetched from Aprimo and saved to your Google Drive.' +
+          '<br>This usually takes a few seconds.' +
+        '</p>' +
+      '</body></html>'
+    );
+    newTab.document.close();
+  }
 
   setCardLoading(assetId, true);
   google.script.run
     .withSuccessHandler(function(result) {
       setCardLoading(assetId, false);
       if (result.success) {
-        window.open(result.editUrl, '_blank');
-        loadEditSession(); // Show banner
+        if (newTab && !newTab.closed) {
+          // Navigate the pre-opened tab to the real file
+          newTab.location.href = result.editUrl;
+        } else {
+          // Tab was closed or popup was blocked — fall back to a direct open
+          // attempt, then always provide the link in the banner
+          try { window.open(result.editUrl, '_blank'); } catch (e) {}
+        }
+        loadEditSession(result.editUrl); // Show banner with Open link
       } else {
-        alert('Could not open asset: ' + result.error);
+        if (newTab && !newTab.closed) newTab.close();
+        showToast('Could not open asset: ' + result.error, 'error');
       }
     })
     .withFailureHandler(function(err) {
       setCardLoading(assetId, false);
-      alert('Error: ' + err.message);
+      if (newTab && !newTab.closed) newTab.close();
+      showToast('Error: ' + err.message, 'error');
     })
     .openAssetForEditing(assetId, title);
 }
 
+// ─── Sync to Drive ────────────────────────────────────────────────────────────
+function syncToDrive(assetId, title, ext) {
+  // Pre-open blank tab synchronously while user gesture is active.
+  // Navigating from an async callback would be blocked as an untrusted popup.
+  var newTab = window.open('', '_blank');
+  if (newTab) {
+    newTab.document.write(
+      '<html><head><title>Saving to Drive…</title></head>' +
+      '<body style="font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif;' +
+             'padding:40px 32px;color:#334155;max-width:480px">' +
+        '<div style="font-size:28px;margin-bottom:16px">⏳</div>' +
+        '<h3 style="margin:0 0 8px;font-size:16px">Saving to Google Drive…</h3>' +
+        '<p style="margin:0;font-size:13px;color:#64748b;line-height:1.6">' +
+          'Downloading from Aprimo and saving a copy to your Drive.' +
+          '<br>This usually takes a few seconds.' +
+        '</p>' +
+      '</body></html>'
+    );
+    newTab.document.close();
+  }
+
+  // Disable the button while saving
+  var btn = document.getElementById('drive-' + assetId);
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      if (btn) { btn.disabled = false; btn.textContent = 'Save to Drive'; }
+      if (result.success) {
+        if (newTab && !newTab.closed) {
+          newTab.location.href = result.driveUrl;
+        } else {
+          try { window.open(result.driveUrl, '_blank'); } catch(e) {}
+        }
+        showToast('✅ Saved to Drive: ' + escHtml(result.driveName || title));
+        loadRecent();
+      } else {
+        if (newTab && !newTab.closed) newTab.close();
+        showToast('Save to Drive failed: ' + (result.error || 'Unknown error'), 'error');
+      }
+    })
+    .withFailureHandler(function(err) {
+      if (btn) { btn.disabled = false; btn.textContent = 'Save to Drive'; }
+      if (newTab && !newTab.closed) newTab.close();
+      showToast('Error: ' + err.message, 'error');
+    })
+    .syncAssetToDrive(assetId, title, ext);
+}
+
 // ─── Edit Session Banner ──────────────────────────────────────────────────────
-function loadEditSession() {
+// Pass knownEditUrl when calling right after openAssetForEditing completes so
+// the banner link is available immediately (before the server round-trip to
+// getCurrentEditSession finishes and before editUrl is stored in the session).
+function loadEditSession(knownEditUrl) {
   google.script.run
     .withSuccessHandler(function(session) {
       state.editSession = session;
       if (session) {
         document.getElementById('banner-title').textContent =
           'Editing: ' + session.originalTitle;
+        var url = knownEditUrl || session.editUrl || '';
+        var linkEl = document.getElementById('banner-open-link');
+        if (url) {
+          linkEl.href = url;
+          linkEl.style.display = '';
+          linkEl.previousSibling && (linkEl.nextSibling.style.display = '');
+        } else {
+          linkEl.style.display = 'none';
+        }
         show('edit-banner');
       } else {
         hide('edit-banner');
@@ -1177,28 +1526,118 @@ function loadCollections() {
     .getCollections();
 }
 
-// Radio button styling
+// ── Radio button: toggle classification visibility and version picker ─────────
 document.querySelectorAll('input[name="upload-as"]').forEach(function(radio) {
   radio.addEventListener('change', function() {
-    document.getElementById('radio-new').classList.toggle('selected', radio.value === 'new');
-    document.getElementById('radio-version').classList.toggle('selected', radio.value === 'version');
-    document.getElementById('existing-asset-wrap').classList.toggle('hidden', radio.value === 'new');
+    const isNew = radio.value === 'new';
+    document.getElementById('radio-new').classList.toggle('selected', isNew);
+    document.getElementById('radio-version').classList.toggle('selected', !isNew);
+    document.getElementById('version-asset-wrap').classList.toggle('hidden', isNew);
+    // Classification required only for new assets
+    document.getElementById('upload-classification').closest('.field-wrap')
+      .classList.toggle('hidden', !isNew);
+    // Reset the picker on mode switch
+    clearVersionSelection();
   });
 });
 
+// ── Version Asset Picker ──────────────────────────────────────────────────────
+document.getElementById('btn-version-search').addEventListener('click', searchForVersion);
+document.getElementById('version-search-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') searchForVersion();
+});
+
+function searchForVersion() {
+  const q = document.getElementById('version-search-input').value.trim();
+  if (!q) return;
+  const statusEl = document.getElementById('version-search-status');
+  const resultsEl = document.getElementById('version-search-results');
+  statusEl.innerHTML = '<span class="spinner"></span> Searching…';
+  resultsEl.innerHTML = '';
+  resultsEl.classList.add('hidden');
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      statusEl.textContent = '';
+      if (result.error) {
+        statusEl.textContent = 'Search failed: ' + result.error;
+        return;
+      }
+      const assets = result.assets || [];
+      if (!assets.length) {
+        statusEl.textContent = 'No assets found. Try a different search.';
+        return;
+      }
+      resultsEl.innerHTML = assets.map(function(a) {
+        const rawExt = (a.fileExtension || '').toLowerCase();
+        const isImage  = /^(png|jpg|jpeg|gif|svg|webp|tiff|bmp)$/.test(rawExt);
+        const isOffice = /^(doc|docx|xls|xlsx|ppt|pptx)$/.test(rawExt);
+        const isVideo  = /^(mp4|mov|avi|wmv|webm)$/.test(rawExt);
+        const extFg = isImage ? '#0369a1' : isOffice ? '#1d4ed8' : isVideo ? '#7c3aed' : '#475569';
+        const extBg = isImage ? '#e0f2fe' : isOffice ? '#dbeafe' : isVideo ? '#ede9fe' : '#f1f5f9';
+
+        const thumbHtml = a.thumbnailUrl
+          ? '<img src="' + escAttr(a.thumbnailUrl) + '" alt="" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + getFileEmoji(rawExt) + '\'">'
+          : getFileEmoji(rawExt);
+        const ext = rawExt.toUpperCase();
+        const badgeHtml = ext
+          ? '<span class="ext-badge" style="background:' + extBg + ';color:' + extFg + '">' + escHtml(ext) + '</span> '
+          : '';
+        const classification = a.classificationLabel ? escHtml(a.classificationLabel) : '';
+        return '<div class="version-asset-card">' +
+          '<div class="version-asset-thumb">' + thumbHtml + '</div>' +
+          '<div class="version-asset-info">' +
+            '<div class="version-asset-name" title="' + escAttr(a.title || a.id) + '">' + escHtml(a.title || a.id) + '</div>' +
+            '<div class="version-asset-meta">' + badgeHtml + classification + '</div>' +
+          '</div>' +
+          '<button class="btn-pick-version" onclick="selectVersionAsset(\'' + escAttr(a.id) + '\',\'' + escAttr(a.title || a.id) + '\',\'' + escAttr(a.thumbnailUrl || '') + '\',\'' + escAttr(rawExt) + '\')">Select</button>' +
+        '</div>';
+      }).join('');
+      resultsEl.classList.remove('hidden');
+      statusEl.textContent = assets.length + ' result' + (assets.length !== 1 ? 's' : '');
+    })
+    .withFailureHandler(function(err) {
+      statusEl.textContent = 'Search failed: ' + err.message;
+    })
+    .searchAssets(q, [], 0);
+}
+
+function selectVersionAsset(id, title, thumbData, ext) {
+  state.selectedVersionAsset = { id: id, title: title };
+  // Populate selected card
+  const thumbEl = document.getElementById('version-sel-thumb');
+  if (thumbData) {
+    thumbEl.innerHTML = '<img src="data:image/jpeg;base64,' + escAttr(thumbData) + '" alt="">';
+  } else {
+    thumbEl.textContent = getFileEmoji(ext);
+  }
+  document.getElementById('version-sel-name').textContent = title;
+  // Swap search area for selected card
+  document.getElementById('version-search-area').classList.add('hidden');
+  document.getElementById('version-selected-area').classList.remove('hidden');
+}
+
+function clearVersionSelection() {
+  state.selectedVersionAsset = null;
+  document.getElementById('version-search-input').value = '';
+  document.getElementById('version-search-status').textContent = '';
+  document.getElementById('version-search-results').classList.add('hidden');
+  document.getElementById('version-search-area').classList.remove('hidden');
+  document.getElementById('version-selected-area').classList.add('hidden');
+}
+
+// ── Upload button ─────────────────────────────────────────────────────────────
 document.getElementById('btn-upload').addEventListener('click', function() {
   const uploadAs = document.querySelector('input[name="upload-as"]:checked').value;
   const classificationId = document.getElementById('upload-classification').value;
   const collectionId = document.getElementById('upload-collection').value;
-  const tags = document.getElementById('upload-tags').value;
-  const existingId = document.getElementById('existing-asset-id').value.trim();
 
   if (uploadAs === 'new' && !classificationId) {
-    alert('Please select an asset type (classification) before uploading.');
+    alert('Please select a classification before uploading.');
     return;
   }
-  if (uploadAs === 'version' && !existingId) {
-    alert('Please enter the Aprimo asset ID to upload a new version.');
+  if (uploadAs === 'version' && !state.selectedVersionAsset) {
+    alert('Please search and select the Aprimo asset you want to add a version to.');
     return;
   }
 
@@ -1208,6 +1647,8 @@ document.getElementById('btn-upload').addEventListener('click', function() {
 
   const statusEl = document.getElementById('upload-status');
   statusEl.innerHTML = '<div class="upload-progress"><span class="spinner"></span> Exporting and uploading…</div>';
+
+  const existingId = uploadAs === 'version' ? state.selectedVersionAsset.id : undefined;
 
   google.script.run
     .withSuccessHandler(function(result) {
@@ -1219,6 +1660,7 @@ document.getElementById('btn-upload').addEventListener('click', function() {
           <a href="${escHtml(result.viewUrl)}" target="_blank">View in Aprimo →</a>
         </div>`;
         loadRecent();
+        if (uploadAs === 'version') clearVersionSelection();
       } else {
         statusEl.innerHTML = '<div class="connect-error">' + escHtml(result.error || 'Upload failed') + '</div>';
       }
@@ -1228,7 +1670,7 @@ document.getElementById('btn-upload').addEventListener('click', function() {
       btn.textContent = 'Upload to Aprimo';
       statusEl.innerHTML = '<div class="connect-error">' + escHtml(err.message) + '</div>';
     })
-    .uploadActiveDocument(collectionId, tags, uploadAs, existingId || undefined, classificationId || undefined);
+    .uploadActiveDocument(collectionId, uploadAs, existingId, classificationId || undefined);
 });
 
 // ─── Recent Tab ───────────────────────────────────────────────────────────────
@@ -1240,22 +1682,64 @@ function loadRecent() {
         container.innerHTML = '<div class="state-box"><div class="state-icon">🕐</div><div class="state-title">No recent activity</div><div class="state-sub">Assets you search, insert, or upload will appear here</div></div>';
         return;
       }
-      container.innerHTML = items.map(function(item) {
-        const ext = item.fileExtension || '';
-        const emoji = getFileEmoji(ext);
-        const actionLabel = { inserted: 'Inserted', uploaded: 'Uploaded', opened: 'Opened', 're-uploaded': 'Re-uploaded' }[item.action] || 'Accessed';
-        const timeAgo = relativeTime(item.accessedAt);
-        return `<div class="recent-item">
-          <div class="recent-icon">${emoji}</div>
-          <div class="recent-info">
-            <div class="recent-name" title="${escAttr(item.title || item.id)}">${escHtml(item.title || item.id)}</div>
-            <div class="recent-meta">${actionLabel} · ${timeAgo}</div>
-          </div>
-          <button class="recent-action" onclick="insertAsset('${escHtml(item.id)}','${escAttr(item.title || '')}','')">↗</button>
-        </div>`;
-      }).join('');
+      container.innerHTML = '<div class="results-list">' +
+        items.map(renderRecentCard).join('') +
+        '</div>';
     })
     .getRecentAssets();
+}
+
+function renderRecentCard(item) {
+  const ext = (item.fileExtension || '').toLowerCase();
+  const isImage  = /^(png|jpg|jpeg|gif|svg|webp|tiff|bmp)$/.test(ext);
+  const isVideo  = /^(mp4|mov|avi|wmv|webm|mkv)$/.test(ext);
+  const isAnyOffice = /^(docx|doc|xlsx|xls|pptx|ppt)$/.test(ext);
+
+  const docType = state.docInfo && state.docInfo.type;
+  const COMPAT = {
+    document:     /^(docx|doc)$/,
+    spreadsheet:  /^(xlsx|xls)$/,
+    presentation: /^(pptx|ppt)$/
+  };
+  const isCompatibleOffice = docType && COMPAT[docType] && COMPAT[docType].test(ext);
+
+  const id    = item.id;
+  const title = item.title || item.id;
+  const actionLabel = {
+    inserted: 'Inserted', uploaded: 'Uploaded', opened: 'Opened',
+    're-uploaded': 'Re-uploaded', synced: 'Saved to Drive'
+  }[item.action] || 'Accessed';
+  const timeAgo = relativeTime(item.accessedAt);
+
+  const isImage_  = isImage;
+  const extColor = isImage_ ? '#0369a1' : isAnyOffice ? '#1d4ed8' : isVideo ? '#7c3aed' : '#475569';
+  const extBg    = isImage_ ? '#e0f2fe' : isAnyOffice ? '#dbeafe' : isVideo ? '#ede9fe' : '#f1f5f9';
+  const extBadge = ext
+    ? '<span class="ext-badge" style="background:' + extBg + ';color:' + extColor + '">' + ext.toUpperCase() + '</span>'
+    : '';
+
+  let actions = '';
+  if (isImage || isVideo) {
+    actions += '<button class="btn-action btn-insert" onclick="insertAsset(\'' + escHtml(id) + '\',\'' + escAttr(title) + '\',\'\')">Insert</button>';
+    actions += '<button class="btn-action btn-ghost" onclick="previewAsset(\'' + escHtml(id) + '\')">Preview</button>';
+  } else if (isCompatibleOffice) {
+    actions += '<button class="btn-action btn-open" onclick="openAndEdit(\'' + escHtml(id) + '\',\'' + escAttr(title) + '\')">Open &amp; Edit</button>';
+    actions += '<button class="btn-action btn-ghost" onclick="previewAsset(\'' + escHtml(id) + '\')">Info</button>';
+  } else if (isAnyOffice) {
+    actions += '<button class="btn-action btn-ghost" onclick="previewAsset(\'' + escHtml(id) + '\')">Info</button>';
+  } else {
+    actions += '<button class="btn-action btn-ghost" onclick="previewAsset(\'' + escHtml(id) + '\')">Preview</button>';
+  }
+  actions += '<button class="btn-action btn-drive" onclick="syncToDrive(\'' + escHtml(id) + '\',\'' + escAttr(title) + '\',\'' + escAttr(ext) + '\')">Save to Drive</button>';
+
+  return '<div class="asset-card" id="card-' + escHtml(id) + '">' +
+    '<div class="asset-thumb">' + getFileEmoji(ext) + '</div>' +
+    '<div class="asset-info">' +
+      '<div class="asset-name" title="' + escAttr(title) + '">' + escHtml(title) + '</div>' +
+      '<div class="asset-meta">' + extBadge + ' ' + escHtml(actionLabel) + ' · ' + escHtml(timeAgo) + '</div>' +
+      '<div class="asset-actions">' + actions + '</div>' +
+    '</div>' +
+  '</div>';
 }
 
 // ─── Utilities ────────────────────────────────────────────────────────────────
@@ -1305,18 +1789,133 @@ function setCardLoading(assetId, loading) {
 }
 
 function previewAsset(assetId) {
+  // Remember which tab we came from so the back button can return to it
+  state.previewFromTab = state.activeTab;
+
+  // The detail panel lives inside #tab-search — make sure that tab is visible
+  if (state.activeTab !== 'search') {
+    // Switch tabs without calling loadRecent() side-effect unnecessarily
+    state.activeTab = 'search';
+    document.querySelectorAll('.tab-btn').forEach(function(b) {
+      b.classList.toggle('active', b.dataset.tab === 'search');
+    });
+    ['search', 'upload', 'recent'].forEach(function(t) {
+      document.getElementById('tab-' + t).classList.toggle('hidden', t !== 'search');
+    });
+  }
+
+  hide('search-results');
+  show('detail-panel');
+  // Update back button label to match the tab we came from
+  document.getElementById('detail-back-btn').textContent =
+    state.previewFromTab === 'recent' ? '← Back to recent' : '← Back to results';
+  document.getElementById('detail-content').innerHTML =
+    '<div class="state-box"><div class="spinner"></div><div class="state-sub" style="margin-top:10px">Loading details…</div></div>';
+
   google.script.run
     .withSuccessHandler(function(asset) {
-      if (!asset || asset.error) { alert(asset && asset.error || 'Asset not found'); return; }
-      const info = [
-        asset.title,
-        asset.fileExtension ? asset.fileExtension.toUpperCase() + ' · ' + formatBytes(asset.fileSize) : '',
-        asset.collectionLabel ? '📁 ' + asset.collectionLabel : '',
-        asset.modifiedOn ? 'Modified: ' + new Date(asset.modifiedOn).toLocaleDateString() : ''
-      ].filter(Boolean).join('\n');
-      alert(info);
+      if (!asset || asset.error) {
+        document.getElementById('detail-content').innerHTML =
+          '<div class="state-box"><div class="state-icon">⚠️</div><div class="state-title">Error</div><div class="state-sub">' +
+          escHtml(asset && asset.error || 'Asset not found') + '</div></div>';
+        return;
+      }
+      renderDetailPanel(asset);
+    })
+    .withFailureHandler(function(err) {
+      document.getElementById('detail-content').innerHTML =
+        '<div class="state-box"><div class="state-icon">⚠️</div><div class="state-title">Error</div><div class="state-sub">' +
+        escHtml(err.message) + '</div></div>';
     })
     .getAsset(assetId);
+}
+
+function closeDetailPanel() {
+  hide('detail-panel');
+  const returnTo = state.previewFromTab || 'search';
+  state.previewFromTab = null;
+  if (returnTo === 'search') {
+    // Stay on search, just restore the results view
+    show('search-results');
+  } else {
+    // Return to the tab that launched the preview (e.g. recent)
+    switchTab(returnTo);
+  }
+}
+
+function renderDetailPanel(asset) {
+  var ext = (asset.fileExtension || '').toLowerCase();
+  var isImage = /^(png|jpg|jpeg|gif|svg|webp|tiff|bmp)$/.test(ext);
+  var isVideo = /^(mp4|mov|avi|wmv|webm|mkv)$/.test(ext);
+  var isAnyOffice = /^(docx|doc|xlsx|xls|pptx|ppt)$/.test(ext);
+
+  var docType = state.docInfo && state.docInfo.type;
+  var COMPAT = {
+    document:     /^(docx|doc)$/,
+    spreadsheet:  /^(xlsx|xls)$/,
+    presentation: /^(pptx|ppt)$/
+  };
+  var isCompatibleOffice = docType && COMPAT[docType] && COMPAT[docType].test(ext);
+
+  var thumbHtml = asset.thumbnailUrl
+    ? '<img src="' + escHtml(asset.thumbnailUrl) + '" alt="" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + getFileEmoji(ext) + '\'">'
+    : getFileEmoji(ext);
+
+  var extColor = isImage ? '#0369a1' : isAnyOffice ? '#1d4ed8' : isVideo ? '#7c3aed' : '#475569';
+  var extBg    = isImage ? '#e0f2fe' : isAnyOffice ? '#dbeafe' : isVideo ? '#ede9fe' : '#f1f5f9';
+
+  // ── Standard file info rows ──
+  var infoRows = [];
+  if (ext)                     infoRows.push({ label: 'File type',     value: ext.toUpperCase() });
+  if (asset.fileSize)          infoRows.push({ label: 'File size',     value: formatBytes(asset.fileSize) });
+  if (asset.classificationLabel) infoRows.push({ label: 'Classification', value: asset.classificationLabel });
+  if (asset.collectionLabel)   infoRows.push({ label: 'Collection',    value: asset.collectionLabel });
+  if (asset.status)            infoRows.push({ label: 'Status',        value: asset.status });
+  if (asset.modifiedOn)        infoRows.push({ label: 'Modified',      value: new Date(asset.modifiedOn).toLocaleDateString() });
+  if (asset.createdOn)         infoRows.push({ label: 'Created',       value: new Date(asset.createdOn).toLocaleDateString() });
+
+  var infoHtml = infoRows.map(function(r) {
+    return '<div class="detail-row"><span class="detail-label">' + escHtml(r.label) +
+           '</span><span class="detail-value">' + escHtml(r.value) + '</span></div>';
+  }).join('');
+
+  // ── Custom fields ──
+  var fields = asset.fields || [];
+  var fieldsHtml = '';
+  if (fields.length > 0) {
+    fieldsHtml = '<div class="detail-section"><div class="detail-section-head">Metadata</div>' +
+      fields.map(function(f) {
+        return '<div class="detail-row"><span class="detail-label">' + escHtml(f.label) +
+               '</span><span class="detail-value">' + escHtml(f.value) + '</span></div>';
+      }).join('') + '</div>';
+  }
+
+  // ── Action buttons ──
+  var actionsHtml = '';
+  if (isImage || isVideo) {
+    actionsHtml = '<button class="btn-action btn-insert" onclick="insertAsset(\'' + escHtml(asset.id) + '\',\'' + escAttr(asset.title) + '\',\'' + escAttr(asset.downloadUrl || '') + '\');closeDetailPanel()">Insert</button>';
+  } else if (isCompatibleOffice) {
+    actionsHtml = '<button class="btn-action btn-open" onclick="openAndEdit(\'' + escHtml(asset.id) + '\',\'' + escAttr(asset.title) + '\');closeDetailPanel()">Open &amp; Edit</button>';
+  } else if (isAnyOffice) {
+    actionsHtml = '<span style="font-size:10px;color:#94a3b8">Open this file type in its matching Google app to use Open &amp; Edit.</span>';
+  }
+  // Save to Drive is available for every asset type
+  actionsHtml += '<button class="btn-action btn-drive" onclick="syncToDrive(\'' + escHtml(asset.id) + '\',\'' + escAttr(asset.title) + '\',\'' + escAttr(asset.fileExtension || '') + '\')">Save to Drive</button>';
+
+  document.getElementById('detail-content').innerHTML =
+    '<div class="detail-hero">' +
+      '<div class="detail-hero-thumb">' + thumbHtml + '</div>' +
+      '<div class="detail-hero-info">' +
+        '<div class="detail-hero-title">' + escHtml(asset.title) + '</div>' +
+        '<div class="detail-hero-badges">' +
+          (ext ? '<span class="ext-badge" style="background:' + extBg + ';color:' + extColor + '">' + ext.toUpperCase() + '</span>' : '') +
+          (asset.fileSize ? '<span style="font-size:10px;color:#94a3b8">' + formatBytes(asset.fileSize) + '</span>' : '') +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    (infoHtml ? '<div class="detail-section"><div class="detail-section-head">File Details</div>' + infoHtml + '</div>' : '') +
+    fieldsHtml +
+    '<div class="detail-actions">' + actionsHtml + '</div>';
 }
 
 // ─── Toast Notification ───────────────────────────────────────────────────────
@@ -1325,7 +1924,7 @@ function showToast(msg) {
   if (!toast) {
     toast = document.createElement('div');
     toast.id = 'toast';
-    toast.style.cssText = 'position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#0f172a;color:white;padding:8px 16px;border-radius:8px;font-size:12px;z-index:999;opacity:0;transition:opacity .2s';
+    toast.style.cssText = 'position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#0f172a;color:white;padding:8px 16px;border-radius:8px;font-size:12px;z-index:999;opacity:0;transition:opacity .2s;pointer-events:none;user-select:none';
     document.body.appendChild(toast);
   }
   toast.textContent = msg;

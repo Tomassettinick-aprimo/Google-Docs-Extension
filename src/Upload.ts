@@ -6,14 +6,13 @@
  * Exports the currently active Google Doc / Sheet / Slides document to its
  * corresponding Office format, then uploads it to Aprimo.
  *
- * @param collectionId    - Target Aprimo collection ID
- * @param tags            - Comma-separated tag string
+ * @param collectionId    - Target Aprimo collection ID (optional)
  * @param uploadAs        - 'new' = new asset | 'version' = new version of existing
  * @param existingAssetId - Required when uploadAs === 'version'
+ * @param classificationId - Required when uploadAs === 'new'
  */
 function uploadActiveDocument(
   collectionId: string,
-  tags: string,
   uploadAs: 'new' | 'version',
   existingAssetId?: string,
   classificationId?: string
@@ -52,7 +51,6 @@ function uploadActiveDocument(
       fileName,
       blob,
       collectionId,
-      tags,
       uploadAs === 'version' ? existingAssetId : undefined,
       classificationId
     );
@@ -69,7 +67,7 @@ function uploadActiveDocument(
     return {
       success: true,
       recordId: result.recordId,
-      viewUrl: `https://${token.tenant}.aprimo.com/dam/${result.recordId}`
+      viewUrl: `https://${token.tenant}.aprimo.com/dam/contentitems/${result.recordId}`
     };
   } catch (e: any) {
     Logger.log(`uploadActiveDocument error: ${e.message}`);

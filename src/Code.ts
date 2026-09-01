@@ -20,8 +20,14 @@ function onOpen(e: any): void {
 
 /**
  * Required entry point for editor add-ons installed from the marketplace.
+ * Also stores the production web app URL so the sidebar can use it for the
+ * OAuth redirect_uri without requiring a manual _runSetup() call.
  */
 function onInstall(e: any): void {
+  // Replace this with the URL of your versioned web app deployment.
+  // Get it from: Deploy → Manage deployments → (web app entry) → URL.
+  const PRODUCTION_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzydVKcyTnKwnSeAIuh7pR4_ybH4OND49q_xoD3MAQp20dtHTw7lyZ3o01BBA4cL6B5Pw/exec';
+  setWebAppUrl(PRODUCTION_WEB_APP_URL);
   onOpen(e);
 }
 

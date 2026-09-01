@@ -13,6 +13,8 @@ interface EditSession {
   originalTitle: string;
   fileExtension: string;
   startedAt: number;
+  /** The Google Docs/Sheets/Slides edit URL — stored so the banner can link back. */
+  editUrl?: string;
 }
 
 // ─── Insert Image ─────────────────────────────────────────────────────────────
@@ -147,16 +149,32 @@ function openAssetForEditing(
 
     const ext = asset.fileExtension.toLowerCase();
 
-    // Fetch the file content
-    const fileResp = UrlFetchApp.fetch(downloadResult.url, {
+    // Fetch the file content.
+    // Pre-signed CDN URLs must NOT include an Authorization header — CDNs reject
+    // requests that have both a signature in the URL and an auth header.
+    const fetchOpts: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
       method: 'get',
-      headers: { 'Authorization': headers['Authorization'] },
       muteHttpExceptions: true,
       followRedirects: true
-    });
+    };
+    if (!downloadResult.preSignedUrl) {
+      // API endpoints require Authorization, API-VERSION: 1, and Accept: application/octet-stream.
+      // Without the Accept header, Aprimo returns JSON metadata instead of the binary file.
+      (fetchOpts as any).headers = {
+        'Authorization': headers['Authorization'],
+        'API-VERSION': '1',
+        'Accept': 'application/octet-stream'
+      };
+    }
+    const fileResp = UrlFetchApp.fetch(downloadResult.url, fetchOpts);
 
-    if (fileResp.getResponseCode() !== 200) {
-      return { success: false, error: `Download failed (${fileResp.getResponseCode()})` };
+    const dlCode = fileResp.getResponseCode();
+    if (dlCode !== 200) {
+      const dlBody = fileResp.getContentText();
+      Logger.log(`openAssetForEditing: download failed (${dlCode}) from URL: ${downloadResult.url}`);
+      Logger.log(`openAssetForEditing: preSignedUrl=${downloadResult.preSignedUrl}`);
+      Logger.log(`openAssetForEditing: response body: ${dlBody.substring(0, 400)}`);
+      return { success: false, error: `Download failed (${dlCode})` };
     }
 
     const officeMime: { [key: string]: string } = {
@@ -182,22 +200,42 @@ function openAssetForEditing(
       .setName(`[Aprimo] ${assetTitle}.${ext}`)
       .setContentType(mime);
 
-    // Save to Drive using DriveApp (no Advanced Service needed).
-    // Drive automatically opens Office files in Google Docs/Sheets/Slides
-    // compatibility mode when you navigate to their edit URL.
+    // ── Upload to Drive as native Office format (no conversion) ─────────────
+    // DriveApp.createFile(blob) passes the raw blob directly to Drive — no
+    // manual binary payload construction, no byte-array spreading that can
+    // corrupt or truncate embedded images for larger files.
+    //
+    // We intentionally skip the Drive API v3 MIME-conversion path.  Setting
+    // mimeType in the multipart metadata to a google-apps type causes Drive to
+    // convert the file on ingestion, and Google's DOCX→Docs conversion drops
+    // embedded images (EMF/WMF, non-standard encodings) — they appear as broken
+    // warning-triangle placeholders.  Storing the file as the original Office
+    // format and opening with docs.google.com/document/d/{id}/edit opens it in
+    // "Office Compatibility Mode": full Google Docs UI, all images intact.
+    const nativeMime: string = googleMime[ext];  // needed for editBase URL mapping
+
     const driveFile = DriveApp.createFile(blob);
     const driveFileId: string = driveFile.getId();
 
-    // Drive opens Office files in the appropriate Google editor automatically
-    const editUrl = `https://drive.google.com/file/d/${driveFileId}/edit`;
+    // Map file extension → Google editor URL base
+    const editBase: { [key: string]: string } = {
+      docx: 'https://docs.google.com/document/d',
+      doc:  'https://docs.google.com/document/d',
+      xlsx: 'https://docs.google.com/spreadsheets/d',
+      xls:  'https://docs.google.com/spreadsheets/d',
+      pptx: 'https://docs.google.com/presentation/d',
+      ppt:  'https://docs.google.com/presentation/d'
+    };
+    const editUrl: string = `${editBase[ext] || 'https://docs.google.com/document/d'}/${driveFileId}/edit`;
 
-    // Persist the edit session
+    // Persist the edit session (including editUrl so the banner can link back)
     const session: EditSession = {
       assetId,
       driveFileId,
       originalTitle: assetTitle,
       fileExtension: ext,
-      startedAt: Date.now()
+      startedAt: Date.now(),
+      editUrl
     };
 
     PropertiesService.getUserProperties()
@@ -246,15 +284,33 @@ function saveEditAsNewVersion(): { success: boolean; assetId?: string; error?: s
     const mime = exportMime[session.fileExtension] || 'application/octet-stream';
     const fileName = `${session.originalTitle}.${session.fileExtension}`;
 
-    // File is stored natively in Drive (DOCX/XLSX/PPTX), retrieve it directly.
-    // Drive's compatibility-mode edits are saved back to the original Office format.
     const driveFile = DriveApp.getFileById(session.driveFileId);
-    const blob = driveFile.getBlob()
-      .setName(fileName)
-      .setContentType(mime);
+    const driveMime = driveFile.getMimeType();
+
+    let blob: GoogleAppsScript.Base.Blob;
+    if (driveMime.startsWith('application/vnd.google-apps.')) {
+      // File was converted to native Google format on upload.
+      // Export it back to the original Office MIME type before re-uploading.
+      const exportResp = UrlFetchApp.fetch(
+        `https://www.googleapis.com/drive/v3/files/${session.driveFileId}/export?mimeType=${encodeURIComponent(mime)}`,
+        {
+          method: 'get',
+          headers: { 'Authorization': `Bearer ${ScriptApp.getOAuthToken()}` },
+          muteHttpExceptions: true
+        }
+      );
+      if (exportResp.getResponseCode() !== 200) {
+        Logger.log(`saveEditAsNewVersion: export failed (${exportResp.getResponseCode()}): ${exportResp.getContentText().substring(0, 300)}`);
+        return { success: false, error: `Could not export from Google format (${exportResp.getResponseCode()})` };
+      }
+      blob = exportResp.getBlob().setName(fileName).setContentType(mime);
+    } else {
+      // Office file stored as-is in Drive — retrieve blob directly.
+      blob = driveFile.getBlob().setName(fileName).setContentType(mime);
+    }
 
     // Upload as a new version
-    const result = uploadRecord(fileName, blob, '', '', session.assetId);
+    const result = uploadRecord(fileName, blob, '', session.assetId);
     if (!result.success) return result;
 
     // Clean up: trash the temp Drive file and clear the session
@@ -285,4 +341,72 @@ function cancelEditSession(): void {
   const session: EditSession = JSON.parse(json);
   try { DriveApp.getFileById(session.driveFileId).setTrashed(true); } catch (e) {}
   props.deleteProperty('aprimo_current_edit');
+}
+
+// ─── Sync to Drive ────────────────────────────────────────────────────────────
+
+/**
+ * Downloads an Aprimo asset in its original format and saves a copy to the
+ * user's Google Drive.  The file is stored as-is (no format conversion) so
+ * the Drive copy matches exactly what is in Aprimo.
+ *
+ * @param assetId       - Aprimo record ID
+ * @param assetTitle    - Display title (used as the Drive file name)
+ * @param fileExtension - Extension without leading dot (e.g. "pdf", "docx")
+ */
+function syncAssetToDrive(
+  assetId: string,
+  assetTitle: string,
+  fileExtension: string
+): { success: boolean; driveUrl?: string; driveName?: string; error?: string } {
+  const headers = _getApiHeaders();
+  if (!headers) return { success: false, error: 'Not authenticated' };
+
+  try {
+    // Resolve the CDN/API download URL (same logic used by Open & Edit)
+    const downloadResult = getAssetDownloadUrl(assetId);
+    if ('error' in downloadResult) return { success: false, error: (downloadResult as any).error };
+
+    const ext = (fileExtension || '').toLowerCase().replace(/^\./, '');
+    const fileName = ext ? `${assetTitle}.${ext}` : assetTitle;
+
+    // Fetch the binary
+    const fetchOpts: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
+      method: 'get',
+      muteHttpExceptions: true,
+      followRedirects: true
+    };
+    if (!downloadResult.preSignedUrl) {
+      // Non-CDN endpoints need auth + explicit binary Accept header
+      (fetchOpts as any).headers = {
+        'Authorization': headers['Authorization'],
+        'API-VERSION': '1',
+        'Accept': 'application/octet-stream'
+      };
+    }
+
+    const fileResp = UrlFetchApp.fetch(downloadResult.url, fetchOpts);
+    const dlCode = fileResp.getResponseCode();
+    if (dlCode !== 200) {
+      Logger.log(`syncAssetToDrive: download failed (${dlCode}) from ${downloadResult.url}`);
+      return { success: false, error: `Download failed (${dlCode})` };
+    }
+
+    // Save the raw binary to Drive — no format conversion, preserves the
+    // original file type exactly as stored in Aprimo.
+    const blob = fileResp.getBlob().setName(fileName);
+    const driveFile = DriveApp.createFile(blob);
+    const driveFileId = driveFile.getId();
+
+    addToRecent({ id: assetId, title: assetTitle, fileExtension: ext, action: 'synced' });
+
+    return {
+      success: true,
+      driveUrl: `https://drive.google.com/file/d/${driveFileId}/view`,
+      driveName: fileName
+    };
+  } catch (e: any) {
+    Logger.log(`syncAssetToDrive error: ${e.message}`);
+    return { success: false, error: e.message };
+  }
 }
