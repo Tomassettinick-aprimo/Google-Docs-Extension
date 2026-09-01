@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — Aprimo DAM for Google Workspace</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #1a202c;
+      background: #fff;
+      line-height: 1.7;
+    }
+
+    header {
+      background: #1D2425;
+      color: #fff;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    header a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 14px;
+    }
+    header a:hover { color: #fff; }
+    header span { color: rgba(255,255,255,0.4); }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 56px 24px 80px;
+    }
+
+    .last-updated {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 32px;
+    }
+
+    h1 {
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 40px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    p { margin-bottom: 14px; color: #374151; }
+
+    ul {
+      margin: 0 0 14px 20px;
+      color: #374151;
+    }
+    ul li { margin-bottom: 6px; }
+
+    .highlight-box {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 24px 0;
+    }
+    .highlight-box p { margin: 0; color: #166534; font-weight: 500; }
+
+    code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #0f172a;
+    }
+
+    a { color: #2A7D7C; }
+    a:hover { text-decoration: underline; }
+
+    footer {
+      border-top: 1px solid #e2e8f0;
+      padding: 32px 24px;
+      text-align: center;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+    footer a { color: #64748b; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .footer-links { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html">← Aprimo DAM for Google Workspace</a>
+    <span>/</span>
+    <span style="color:#fff">Privacy Policy</span>
+  </header>
+
+  <div class="container">
+
+    <p class="last-updated">Last updated: September 1, 2026</p>
+    <h1>Privacy Policy</h1>
+    <p>
+      This Privacy Policy describes how the <strong>Aprimo DAM for Google Workspace</strong> add-on
+      ("the Add-on", "we", "our") handles information when you use it. This add-on is
+      <a href="https://github.com/Tomassettinick-aprimo/Google-Docs-Extension" target="_blank">open source</a>
+      and released under the <a href="https://github.com/Tomassettinick-aprimo/Google-Docs-Extension/blob/main/LICENSE" target="_blank">MIT License</a>.
+    </p>
+
+    <div class="highlight-box">
+      <p>
+        🔒 The short version: this Add-on does not collect, store, or transmit your personal data to any server we operate.
+        All credentials and settings are stored exclusively in your own Google account's user properties,
+        and all asset data flows directly between your browser and your Aprimo tenant.
+      </p>
+    </div>
+
+    <h2>1. What data the Add-on accesses</h2>
+    <p>To function, the Add-on reads and writes the following data:</p>
+    <ul>
+      <li><strong>Google Docs / Sheets / Slides content</strong> — the Add-on reads the active document's name and ID for upload, and inserts images you choose at your cursor. It only accesses the currently open file (<code>*.currentonly</code> scopes).</li>
+      <li><strong>Google Drive files</strong> — when you use Open &amp; Edit, the Add-on creates a temporary copy of an Office file in your Drive (using <code>drive.file</code> scope, which restricts access to files the Add-on itself creates). This file is deleted from Drive after you save the new version back to Aprimo.</li>
+      <li><strong>Your Google account email</strong> — read once to namespace your per-user settings so multiple users on the same script deployment don't share credentials.</li>
+      <li><strong>Your Aprimo API credentials</strong> — the OAuth 2.0 access token obtained from your Aprimo tenant is stored in <a href="https://developers.google.com/apps-script/guides/properties" target="_blank">Google Apps Script User Properties</a>, which is scoped to your Google account and not readable by other users.</li>
+    </ul>
+
+    <h2>2. What data is NOT collected</h2>
+    <ul>
+      <li>No personal data is sent to any server operated by this project's maintainers.</li>
+      <li>No analytics, telemetry, or usage tracking of any kind is implemented.</li>
+      <li>No document content is stored outside of your own Google account or your Aprimo tenant.</li>
+      <li>No cookies are set outside of Google's own authentication mechanisms.</li>
+    </ul>
+
+    <h2>3. How your Aprimo credentials are stored</h2>
+    <p>
+      When you connect to Aprimo, the Add-on completes an OAuth 2.0 PKCE flow with your Aprimo tenant.
+      The resulting access token is stored in
+      <a href="https://developers.google.com/apps-script/guides/properties" target="_blank">Google Apps Script User Properties</a> —
+      a key/value store built into Google that is:
+    </p>
+    <ul>
+      <li>Scoped to your individual Google account</li>
+      <li>Not accessible to other users of the same script</li>
+      <li>Stored entirely within Google's infrastructure</li>
+      <li>Deleted when you click "Disconnect from Aprimo" in the add-on</li>
+    </ul>
+
+    <h2>4. Data flows</h2>
+    <p>All network requests made by the Add-on go to one of two destinations only:</p>
+    <ul>
+      <li><strong>Your Aprimo tenant</strong> (<code>https://&lt;your-tenant&gt;.dam.aprimo.com</code> and <code>https://&lt;your-tenant&gt;.aprimo.com</code>) — for asset search, download, upload, and version management.</li>
+      <li><strong>Google APIs</strong> (<code>googleapis.com</code>) — for reading/writing Drive files and document content via your authorized scopes.</li>
+    </ul>
+    <p>No data is routed through any proxy, analytics platform, or third-party service.</p>
+
+    <h2>5. Open source &amp; auditability</h2>
+    <p>
+      This Add-on is fully open source. Every line of code that runs in your browser and on Google's
+      Apps Script servers is publicly available at:
+    </p>
+    <p>
+      <a href="https://github.com/Tomassettinick-aprimo/Google-Docs-Extension" target="_blank">
+        https://github.com/Tomassettinick-aprimo/Google-Docs-Extension
+      </a>
+    </p>
+    <p>
+      You are encouraged to review the source code, report issues, or fork and self-host the Add-on
+      under the terms of the <a href="https://github.com/Tomassettinick-aprimo/Google-Docs-Extension/blob/main/LICENSE" target="_blank">MIT License</a>.
+    </p>
+
+    <h2>6. Google API Services User Data Policy</h2>
+    <p>
+      This Add-on's use of information received from Google APIs adheres to the
+      <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank">Google API Services User Data Policy</a>,
+      including the Limited Use requirements.
+    </p>
+
+    <h2>7. Children's privacy</h2>
+    <p>
+      This Add-on is not directed at children under the age of 13 and does not knowingly collect
+      any personal information from children.
+    </p>
+
+    <h2>8. Changes to this policy</h2>
+    <p>
+      If this policy changes materially, the updated version will be posted at this URL and the
+      "Last updated" date at the top will be revised. Because the Add-on is open source, all changes
+      are also visible in the
+      <a href="https://github.com/Tomassettinick-aprimo/Google-Docs-Extension/commits/main" target="_blank">GitHub commit history</a>.
+    </p>
+
+    <h2>9. Contact</h2>
+    <p>
+      Questions about this policy or the Add-on can be raised by opening an issue on GitHub:
+      <a href="https://github.com/Tomassettinick-aprimo/Google-Docs-Extension/issues" target="_blank">
+        github.com/Tomassettinick-aprimo/Google-Docs-Extension/issues
+      </a>
+    </p>
+
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="https://github.com/Tomassettinick-aprimo/Google-Docs-Extension" target="_blank">GitHub</a>
+      <a href="https://github.com/Tomassettinick-aprimo/Google-Docs-Extension/blob/main/LICENSE" target="_blank">MIT License</a>
+      <a href="https://github.com/Tomassettinick-aprimo/Google-Docs-Extension/issues" target="_blank">Report an Issue</a>
+    </div>
+    <p>Copyright &copy; 2026 Aprimo &mdash; Released under the MIT License</p>
+  </footer>
+
+</body>
+</html>
