@@ -14,5 +14,18 @@
     "https://www.googleapis.com/auth/userinfo.email",
     "https://www.googleapis.com/auth/script.container.ui",
     "https://www.googleapis.com/auth/script.scriptapp"
-  ]
+  ],
+  "addOns": {
+    "common": {
+      "name": "Aprimo DAM",
+      "logoUrl": "https://tomassettinick-aprimo.github.io/Google-Docs-Extension/icon.png",
+      "homepageTrigger": {
+        "runFunction": "openSidebar",
+        "enabled": true
+      }
+    },
+    "docs": {},
+    "sheets": {},
+    "slides": {}
+  }
 }
