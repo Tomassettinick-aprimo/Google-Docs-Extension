@@ -15,6 +15,11 @@
     "https://www.googleapis.com/auth/script.container.ui",
     "https://www.googleapis.com/auth/script.scriptapp"
   ],
+  "urlFetchWhitelist": [
+    "https://*.aprimo.com/",
+    "https://*.dam.aprimo.com/",
+    "https://www.googleapis.com/"
+  ],
   "addOns": {
     "common": {
       "name": "Aprimo DAM",
