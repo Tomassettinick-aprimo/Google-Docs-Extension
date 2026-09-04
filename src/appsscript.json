@@ -24,8 +24,23 @@
         "enabled": true
       }
     },
-    "docs": {},
-    "sheets": {},
-    "slides": {}
+    "docs": {
+      "homepageTrigger": {
+        "runFunction": "openSidebar",
+        "enabled": true
+      }
+    },
+    "sheets": {
+      "homepageTrigger": {
+        "runFunction": "openSidebar",
+        "enabled": true
+      }
+    },
+    "slides": {
+      "homepageTrigger": {
+        "runFunction": "openSidebar",
+        "enabled": true
+      }
+    }
   }
 }
